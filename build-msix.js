@@ -48,8 +48,21 @@ try {
   console.error('❌ Build failed:', error.message);
   console.log('');
   console.log('💡 Troubleshooting:');
-  console.log('- Make sure you have Windows 10/11');
-  console.log('- Install Windows SDK if needed');
-  console.log('- Check that all icon files exist');
+  console.log('');
+  console.log('🔧 FIX 1: Clear electron-builder cache');
+  console.log('npx electron-builder cache clean');
+  console.log('');
+  console.log('🔧 FIX 2: Run as Administrator');
+  console.log('Right-click Command Prompt/PowerShell → Run as Administrator');
+  console.log('');
+  console.log('🔧 FIX 3: Disable code signing temporarily');
+  console.log('Edit package.json and set: "certificateFile": false');
+  console.log('');
+  console.log('🔧 FIX 4: Alternative build method');
+  console.log('npm install -g electron-windows-store');
+  console.log('electron-windows-store --input-exe dist\\win-unpacked\\My Planner.exe --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder');
+  console.log('');
+  console.log('🔧 FIX 5: Check Windows Developer Mode');
+  console.log('Settings → Update & Security → For developers → Developer Mode: ON');
   process.exit(1);
 }

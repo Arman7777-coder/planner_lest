@@ -33,11 +33,22 @@ You need icon files in the `icons/` directory with these sizes:
 
 If you're on Windows:
 ```bash
+# Try the automated fix first (recommended)
+npm run fix-build
+
+# Or try the original method
 npm run build-msix-script
 ```
 This will create a `.appx` file in the `dist/` folder.
 
 If you're on Linux/macOS, transfer your project to a Windows machine and run the build command there.
+
+### Troubleshooting Build Issues
+If you get symbolic link errors:
+1. **Run as Administrator**: Right-click Command Prompt → Run as Administrator
+2. **Clear cache**: `npx electron-builder cache clean`
+3. **Enable Developer Mode**: Settings → Update & Security → For developers → Developer Mode: ON
+4. **Use fix script**: `npm run fix-build` (tries alternative methods)
 
 ### 3. Test the Package Locally
 Install the MSIX file on your Windows machine to ensure it works correctly.
