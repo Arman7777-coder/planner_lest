@@ -35,7 +35,7 @@ body {
     overflow: hidden;
 }
 
-/* Acrylic background effect */
+/* Acrylic background effect - subtle */
 body::before {
     content: '';
     position: fixed;
@@ -43,9 +43,9 @@ body::before {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--acrylic-backdrop);
-    backdrop-filter: var(--acrylic-blur);
-    -webkit-backdrop-filter: var(--acrylic-blur);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     z-index: -1;
 }
 
