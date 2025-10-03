@@ -28,10 +28,16 @@ if (!fs.existsSync(iconPath)) {
   console.warn('Required sizes: 16x16, 24x24, 32x32, 48x48, 64x64, 128x128, 256x256, 512x512');
 }
 
+// Clear any problematic environment variables
+delete process.env.WIN_CSC_LINK;
+delete process.env.WIN_CSC_KEY_PASSWORD;
+delete process.env.CSC_LINK;
+delete process.env.CSC_KEY_PASSWORD;
+
 // Build portable exe first
 try {
   console.log('📦 Building portable executable...');
-  execSync('npm run build-win', { stdio: 'inherit' });
+  execSync('npm run build-win', { stdio: 'inherit', env: { ...process.env, WIN_CSC_LINK: undefined, WIN_CSC_KEY_PASSWORD: undefined, CSC_LINK: undefined, CSC_KEY_PASSWORD: undefined } });
 
   console.log('✅ Portable exe built successfully!');
   console.log('📁 Check dist/ for My Planner 1.0.0.exe');

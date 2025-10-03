@@ -4,6 +4,12 @@ const path = require('path');
 
 console.log('🧹 Force cleaning Windows 11 Planner build files...\n');
 
+// Clear problematic environment variables
+delete process.env.WIN_CSC_LINK;
+delete process.env.WIN_CSC_KEY_PASSWORD;
+delete process.env.CSC_LINK;
+delete process.env.CSC_KEY_PASSWORD;
+
 // Function to forcefully delete directory
 function deleteFolderRecursive(folderPath) {
   if (fs.existsSync(folderPath)) {
