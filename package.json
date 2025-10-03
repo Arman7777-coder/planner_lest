@@ -31,12 +31,12 @@
       "!STORE_README.md"
     ],
     "win": {
-      "target": "nsis",
-      "publisherName": "Arman7777-coder",
-      "certificateFile": false,
-      "certificatePassword": false,
-      "verifyUpdateCodeSignature": false,
-      "sign": false
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
     },
     "appx": {
       "applicationId": "Windows11Planner",

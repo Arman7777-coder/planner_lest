@@ -31,16 +31,16 @@ You need icon files in the `icons/` directory with these sizes:
 ### 2. Build APPX Package (Windows Only)
 **Important**: APPX/MSIX packaging can only be done on Windows 10/11.
 
-The build process now uses `electron-windows-store` which avoids the symbolic link issues:
+The build process now uses portable executable + `electron-windows-store` to avoid all signing issues:
 
 ```bash
 # Recommended: Use the fix script (handles everything automatically)
 npm run fix-build
 
 # Alternative: Manual steps
-npm run build-win  # Build regular exe first
+npm run build-win  # Build portable exe first
 npm install -g electron-windows-store  # Install converter
-electron-windows-store --input-exe "dist\win-unpacked\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder
+electron-windows-store --input-exe "dist\My Planner 1.0.0.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder
 ```
 
 This will create a `.appx` file in the `dist/` folder.

@@ -35,12 +35,12 @@ if (!fs.existsSync(iconPath)) {
 console.log('🔄 Trying electron-windows-store method...\n');
 
 try {
-  // First build regular exe
-  console.log('Building regular executable...');
+  // First build portable exe
+  console.log('Building portable executable...');
   execSync('npm run build-win', { stdio: 'inherit' });
 
-  console.log('✅ Regular exe built successfully!');
-  console.log('📁 Check dist/win-unpacked/ for My Planner.exe\n');
+  console.log('✅ Portable exe built successfully!');
+  console.log('📁 Check dist/ for My Planner 1.0.0.exe\n');
 
   // Then try electron-windows-store
   console.log('🔄 Installing electron-windows-store...');
@@ -51,7 +51,7 @@ try {
   }
 
   console.log('📦 Converting to APPX with electron-windows-store...');
-  execSync('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+  execSync('electron-windows-store --input-exe "dist\\My Planner 1.0.0.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
 
   console.log('✅ APPX conversion successful!');
   console.log('📁 Check dist/ folder for Windows11Planner.appx\n');
