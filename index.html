@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows 11 Planner</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0078d4">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>Planner</h1>
+        </header>
+        <div class="dashboard">
+            <div class="stat-card">
+                <h3>Total Tasks</h3>
+                <span id="total-tasks">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Completed</h3>
+                <span id="completed-tasks">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <span id="pending-tasks">0</span>
+            </div>
+            <div class="stat-card">
+                <h3>Overdue</h3>
+                <span id="overdue-tasks">0</span>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="add-btn" id="add-task-btn"><span>+</span> Add Task</button>
+            <div class="tabs">
+                <button class="tab-btn active" data-view="list">Tasks List</button>
+                <button class="tab-btn" data-view="calendar">Calendar View</button>
+            </div>
+            <input type="text" id="search-input" placeholder="Search tasks...">
+            <select id="category-filter">
+                <option value="">All Categories</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Health">Health</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="task-view" id="task-view">
+            <!-- Tasks will be rendered here -->
+        </div>
+        <div class="pending-tasks">
+            <h2>Pending Tasks</h2>
+            <ul id="pending-list"></ul>
+        </div>
+        <!-- Add Task Modal -->
+        <div class="modal" id="task-modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="close-modal">&times;</span>
+                <h2 id="modal-title">Add New Task</h2>
+                <form id="task-form">
+                    <input type="text" id="task-title" placeholder="Task Title" required>
+                    <textarea id="task-description" placeholder="Description"></textarea>
+                    <select id="task-category" required>
+                        <option value="">Select Category</option>
+                        <option value="Work">Work</option>
+                        <option value="Personal">Personal</option>
+                        <option value="Health">Health</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select id="task-priority">
+                        <option value="Low">Low Priority</option>
+                        <option value="Medium">Medium Priority</option>
+                        <option value="High">High Priority</option>
+                    </select>
+                    <input type="date" id="task-due-date">
+                    <button type="submit" id="submit-task">Add Task</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
