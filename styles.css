@@ -5,12 +5,12 @@
     --success: #10B981;
     --warning: #FBBF24;
     --error: #EF4444;
-    --background: rgba(243, 244, 246, 0.8);
-    --surface: rgba(255, 255, 255, 0.4);
-    --surface-solid: rgba(255, 255, 255, 0.8);
+    --background: rgba(243, 244, 246, 0.85);
+    --surface: rgba(255, 255, 255, 0.75);
+    --surface-solid: rgba(255, 255, 255, 0.9);
     --text-primary: #111827;
     --text-secondary: #6B7280;
-    --border: rgba(229, 231, 235, 0.5);
+    --border: rgba(229, 231, 235, 0.6);
     --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
     --border-radius: 8px;
@@ -21,8 +21,8 @@
     --spacing-lg: 20px;
     --spacing-xl: 24px;
     --spacing-xxl: 32px;
-    --acrylic-blur: blur(50px);
-    --acrylic-backdrop: rgba(255, 255, 255, 0.05);
+    --acrylic-blur: blur(30px);
+    --acrylic-backdrop: rgba(255, 255, 255, 0.15);
 }
 
 body {
@@ -78,10 +78,10 @@ body::before {
     left: 0;
     right: 0;
     height: 32px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 1000;
     -webkit-user-select: none;
     -webkit-app-region: drag;
@@ -276,8 +276,8 @@ body::before {
     box-shadow: var(--shadow);
     transition: all 0.2s ease;
     border-left: 4px solid var(--primary);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .task-item:hover {
