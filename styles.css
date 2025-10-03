@@ -28,7 +28,7 @@ body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: var(--background);
+    background: transparent;
     color: var(--text-primary);
     line-height: 1.5;
     overflow: hidden;
@@ -39,7 +39,7 @@ body {
     margin: 32px auto 0 auto;
     padding: var(--spacing-xl);
     min-height: calc(100vh - 32px);
-    background: var(--background);
+    background: transparent;
     overflow-y: auto;
     overflow-x: hidden;
 }
