@@ -41,8 +41,7 @@
       "certificateFile": false,
       "certificatePassword": false,
       "verifyUpdateCodeSignature": false,
-      "sign": false,
-      "windowsKit": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\arm64"
+      "sign": false
     },
     "appx": {
       "applicationId": "Windows11Planner",
