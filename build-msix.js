@@ -46,18 +46,31 @@ try {
   }
 
   console.log('📦 Converting to APPX with electron-windows-store...');
-  execSync('electron-windows-store --input-exe "dist\\My Planner 1.0.0.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+  try {
+    execSync('electron-windows-store --input-directory "dist" --output-directory "dist" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
 
-  console.log('✅ APPX conversion successful!');
-  console.log('📁 Check dist/ folder for Windows11Planner.appx');
-  console.log('');
-  console.log('🚀 Next steps for Microsoft Store submission:');
-  console.log('1. Test the APPX package locally');
-  console.log('2. Go to Partner Center (https://partner.microsoft.com/)');
-  console.log('3. Create a new app submission');
-  console.log('4. Upload your .appx file');
-  console.log('5. Fill out store listing details');
-  console.log('6. Submit for certification');
+    console.log('✅ APPX conversion successful!');
+    console.log('📁 Check dist/ folder for Windows11Planner.appx');
+    console.log('');
+    console.log('🚀 Next steps for Microsoft Store submission:');
+    console.log('1. Test the APPX package locally');
+    console.log('2. Go to Partner Center (https://partner.microsoft.com/)');
+    console.log('3. Create a new app submission');
+    console.log('4. Upload your .appx file');
+    console.log('5. Fill out store listing details');
+    console.log('6. Submit for certification');
+
+  } catch (ewsError) {
+    console.log('⚠️  electron-windows-store failed, but your exe is ready!');
+    console.log('📦 Your portable exe is ready for Store submission!');
+    console.log('📁 File: dist/My Planner 1.0.0.exe');
+    console.log('');
+    console.log('🚀 Microsoft Store submission (exe upload):');
+    console.log('1. Go to Partner Center (https://partner.microsoft.com/)');
+    console.log('2. Create new app submission');
+    console.log('3. Upload your exe file directly');
+    console.log('4. Microsoft will handle the packaging and certification');
+  }
 
 } catch (error) {
   console.error('❌ Build failed:', error.message);

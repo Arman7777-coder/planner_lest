@@ -40,7 +40,7 @@ npm run fix-build
 # Alternative: Manual steps
 npm run build-win  # Build portable exe first
 npm install -g electron-windows-store  # Install converter
-electron-windows-store --input-exe "dist\My Planner 1.0.0.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder
+electron-windows-store --input-directory "dist" --output-directory "dist" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder
 ```
 
 This will create a `.appx` file in the `dist/` folder.
