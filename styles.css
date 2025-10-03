@@ -8,8 +8,8 @@
 
     /* Transparent + blurred surfaces */
     --background: transparent;
-    --surface: rgba(255, 255, 255, 0.05);
-    --surface-solid: rgba(255, 255, 255, 0.05);
+    --surface: rgba(255, 255, 255, 1);
+    --surface-solid: rgba(255, 255, 255, 1);
 
     --text-primary: #ffffff;        /* light text for dark bg */
     --text-secondary: rgba(255,255,255,0.7);
@@ -44,7 +44,7 @@ body {
     margin: 32px auto 0 auto;
     padding: var(--spacing-xl);
     min-height: calc(100vh - 32px);
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-radius: var(--border-radius-large);
@@ -53,7 +53,7 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* Custom Title Bar (blurred) */
+/* Custom Title Bar */
 .title-bar {
     position: fixed;
     top: 0;
@@ -61,8 +61,6 @@ body {
     right: 0;
     height: 32px;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 1000;
     -webkit-user-select: none;
@@ -77,8 +75,6 @@ body {
 .calendar,
 .modal-content {
     background: var(--surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
@@ -164,7 +160,6 @@ h1, h2, h3, h4, h5, h6,
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-primary);
-    opacity: 0.8;
 }
 
 .title-bar-controls {
@@ -340,8 +335,6 @@ h1, h2, h3, h4, h5, h6,
     box-shadow: var(--shadow);
     transition: all 0.2s ease;
     border-left: 4px solid var(--primary);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 .task-item:hover {
@@ -350,7 +343,6 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .task-item.completed {
-    opacity: 0.8;
     border-left-color: var(--success);
 }
 
@@ -490,8 +482,6 @@ h1, h2, h3, h4, h5, h6,
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
 }
 
 .pending-tasks h2 {
@@ -590,7 +580,6 @@ h1, h2, h3, h4, h5, h6,
 
 .calendar-day.other-month {
     color: var(--text-secondary);
-    opacity: 0.5;
 }
 
 /* Modal */
@@ -615,8 +604,6 @@ h1, h2, h3, h4, h5, h6,
     max-width: 500px;
     width: 90%;
     position: relative;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
 }
 
 .close {
