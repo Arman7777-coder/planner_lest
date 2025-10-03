@@ -34,10 +34,18 @@ delete process.env.WIN_CSC_KEY_PASSWORD;
 delete process.env.CSC_LINK;
 delete process.env.CSC_KEY_PASSWORD;
 
-// Build portable exe first
+// Build portable exe first - try electron-packager if electron-builder fails
 try {
   console.log('📦 Building portable executable...');
-  execSync('npm run build-win', { stdio: 'inherit', env: { ...process.env, WIN_CSC_LINK: undefined, WIN_CSC_KEY_PASSWORD: undefined, CSC_LINK: undefined, CSC_KEY_PASSWORD: undefined } });
+  try {
+    // Try electron-builder first
+    execSync('npm run build-win', { stdio: 'inherit', env: { ...process.env, WIN_CSC_LINK: undefined, WIN_CSC_KEY_PASSWORD: undefined, CSC_LINK: undefined, CSC_KEY_PASSWORD: undefined } });
+  } catch (ebError) {
+    console.log('⚠️  electron-builder failed, trying electron-packager...');
+    // Fallback to electron-packager
+    execSync('npx electron-packager . "My Planner" --platform=win32 --arch=x64 --out=dist --overwrite', { stdio: 'inherit' });
+    console.log('✅ Built with electron-packager!');
+  }
 
   console.log('✅ Portable exe built successfully!');
   console.log('📁 Check dist/ for My Planner 1.0.0.exe');
@@ -55,7 +63,12 @@ try {
   try {
     // Move exe to a separate folder for electron-windows-store
     execSync('mkdir app-temp', { stdio: 'inherit' });
-    execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
+    // Try both possible paths (electron-builder vs electron-packager)
+    try {
+      execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
+    } catch (e) {
+      execSync('copy "dist\\My Planner-win32-x64\\My Planner.exe" "app-temp\\"', { stdio: 'inherit' });
+    }
 
     execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
 
