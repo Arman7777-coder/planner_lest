@@ -77,21 +77,30 @@ try {
   console.log('');
   console.log('💡 Troubleshooting:');
   console.log('');
+
+  if (error.message.includes('Access is denied') || error.message.includes('remove')) {
+    console.log('🔧 FILE PERMISSION ISSUE DETECTED:');
+    console.log('1. Close any running instances of the app');
+    console.log('2. Manually delete the dist/ folder');
+    console.log('3. Run: rd /s /q dist (in Command Prompt)');
+    console.log('');
+  }
+
   console.log('🔧 FIX 1: Clear electron-builder cache');
   console.log('npx electron-builder cache clean');
   console.log('');
   console.log('🔧 FIX 2: Run as Administrator');
   console.log('Right-click Command Prompt/PowerShell → Run as Administrator');
   console.log('');
-  console.log('🔧 FIX 3: Manual electron-windows-store');
-  console.log('npm install -g electron-windows-store');
-  console.log('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder');
+  console.log('🔧 FIX 3: Manual cleanup and rebuild');
+  console.log('rmdir /s /q dist');
+  console.log('npm run build-win');
   console.log('');
   console.log('🔧 FIX 4: Check Windows Developer Mode');
   console.log('Settings → Update & Security → For developers → Developer Mode: ON');
   console.log('');
-  console.log('🔧 FIX 5: Build just the exe first');
-  console.log('npm run build-win');
-  console.log('Then manually use electron-windows-store on the exe');
+  console.log('🔧 FIX 5: Alternative - skip electron-builder');
+  console.log('Use electron-packager directly:');
+  console.log('npx electron-packager . "My Planner" --platform=win32 --arch=x64 --out=dist');
   process.exit(1);
 }
