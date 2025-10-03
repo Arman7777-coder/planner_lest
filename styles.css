@@ -44,14 +44,20 @@ body {
     margin: 32px auto 0 auto;
     padding: var(--spacing-xl);
     min-height: calc(100vh - 32px);
-    background: rgba(228, 221, 221, 0.60);
+    /* background: rgba(228, 221, 221, 0.60);
     border-radius: 20px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(30.1px);
     -webkit-backdrop-filter: blur(30.1px);
-    border: 1px solid rgba(228, 221, 221, 0.3);
+    border: 1px solid rgba(228, 221, 221, 0.3); */
     overflow-y: auto;
     overflow-x: hidden;
+    background: rgba(183, 181, 181, 0.41);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(13.1px);
+-webkit-backdrop-filter: blur(13.1px);
+border: 1px solid rgba(183, 181, 181, 0.3);
 }
 
 /* Custom Title Bar */
