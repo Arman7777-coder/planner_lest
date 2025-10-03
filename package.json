@@ -44,7 +44,7 @@
       "sign": false
     },
     "appx": {
-      "applicationId": "50688NewHope.Planner",
+      "applicationId": "Planner",
       "publisher": "CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF",
       "publisherDisplayName": "NewHope",
       "identityName": "50688NewHope.Planner",
