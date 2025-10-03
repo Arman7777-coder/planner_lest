@@ -7,8 +7,8 @@ let mainWindow;
 function createWindow() {
   // Create the browser window with Windows 11 acrylic effect
   mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 900,
+    height: 600,
     minWidth: 800,
     minHeight: 600,
     webPreferences: {

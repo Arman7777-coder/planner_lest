@@ -6,8 +6,8 @@
     --warning: #FBBF24;
     --error: #EF4444;
     --background: rgba(243, 244, 246, 0.8);
-    --surface: rgba(255, 255, 255, 0.7);
-    --surface-solid: rgba(255, 255, 255, 0.95);
+    --surface: rgba(255, 255, 255, 0.4);
+    --surface-solid: rgba(255, 255, 255, 0.8);
     --text-primary: #111827;
     --text-secondary: #6B7280;
     --border: rgba(229, 231, 235, 0.5);
@@ -21,8 +21,8 @@
     --spacing-lg: 20px;
     --spacing-xl: 24px;
     --spacing-xxl: 32px;
-    --acrylic-blur: blur(20px);
-    --acrylic-backdrop: rgba(255, 255, 255, 0.1);
+    --acrylic-blur: blur(50px);
+    --acrylic-backdrop: rgba(255, 255, 255, 0.05);
 }
 
 body {
@@ -55,6 +55,8 @@ body::before {
     padding: var(--spacing-xl);
     min-height: calc(100vh - 32px);
     background: transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .app-header {
@@ -76,10 +78,10 @@ body::before {
     left: 0;
     right: 0;
     height: 32px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1000;
     -webkit-user-select: none;
     -webkit-app-region: drag;
@@ -184,8 +186,8 @@ body::before {
     background: var(--surface);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
 .add-btn {
@@ -274,8 +276,8 @@ body::before {
     box-shadow: var(--shadow);
     transition: all 0.2s ease;
     border-left: 4px solid var(--primary);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
 }
 
 .task-item:hover {
@@ -424,8 +426,8 @@ body::before {
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
 }
 
 .pending-tasks h2 {
