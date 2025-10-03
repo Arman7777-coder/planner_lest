@@ -1,18 +1,19 @@
-/* Windows 11 Fluent Design with Acrylic Effect */
+/* Windows 11 Fluent Design - Solid */
 :root {
     --primary: #2563EB;
     --primary-dark: #1E40AF;
     --success: #10B981;
     --warning: #FBBF24;
     --error: #EF4444;
-    --background: rgba(243, 244, 246, 0.85);
-    --surface: rgba(255, 255, 255, 0.75);
-    --surface-solid: rgba(255, 255, 255, 0.9);
+    --background: #F9FAFB;
+    --surface: #FFFFFF;
+    --surface-solid: #FFFFFF;
     --text-primary: #111827;
     --text-secondary: #6B7280;
-    --border: rgba(229, 231, 235, 0.6);
-    --shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --border: #E5E7EB;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-strong: 0 10px 30px rgba(0, 0, 0, 0.25);
     --border-radius: 8px;
     --border-radius-large: 12px;
     --spacing-xs: 8px;
@@ -21,32 +22,16 @@
     --spacing-lg: 20px;
     --spacing-xl: 24px;
     --spacing-xxl: 32px;
-    --acrylic-blur: blur(3000px);
-    --acrylic-backdrop: rgba(255, 255, 255, 0.95);
 }
 
 body {
     font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: transparent;
+    background: var(--background);
     color: var(--text-primary);
     line-height: 1.5;
     overflow: hidden;
-}
-
-/* Acrylic background effect - subtle */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    z-index: -1;
 }
 
 .app {
@@ -54,7 +39,7 @@ body::before {
     margin: 32px auto 0 auto;
     padding: var(--spacing-xl);
     min-height: calc(100vh - 32px);
-    background: transparent;
+    background: var(--background);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -79,8 +64,7 @@ body::before {
     right: 0;
     height: 32px;
     background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 1000;
     -webkit-user-select: none;
@@ -149,12 +133,10 @@ body::before {
     background: var(--surface);
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-large);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-strong);
     text-align: center;
     transition: box-shadow 0.2s ease;
     border-top: 4px solid var(--primary);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 .stat-card:hover {
@@ -186,8 +168,7 @@ body::before {
     background: var(--surface);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    
 }
 
 .add-btn {
@@ -262,6 +243,8 @@ body::before {
 
 .task-view {
     margin-bottom: 40px;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
 .task-list {
