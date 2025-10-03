@@ -55,13 +55,13 @@ try {
   execSync('mkdir app-temp', { stdio: 'inherit' });
   execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
 
-  execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+  execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist-appx" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
 
   // Clean up temp folder
   execSync('rmdir /s /q app-temp', { stdio: 'inherit' });
 
   console.log('✅ APPX conversion successful!');
-  console.log('📁 Check dist/ folder for Windows11Planner.appx\n');
+  console.log('📁 Check dist-appx/ folder for Windows11Planner.appx\n');
 
 } catch (ewsError) {
   console.log('⚠️  electron-windows-store conversion failed');
