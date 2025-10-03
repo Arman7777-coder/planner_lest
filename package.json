@@ -1,23 +1,60 @@
 {
-  "name": "planner-pwa",
+  "name": "windows-11-planner",
   "version": "1.0.0",
-  "description": "A simple planner PWA wrapped in Electron",
+  "description": "Windows 11 Style Task Management App",
   "author": "Arman7777-coder",
   "main": "main.js",
+  "homepage": "https://github.com/Arman7777-coder/windows-11-planner",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "build-win": "electron-builder --win"
+    "build-win": "electron-builder --win",
+    "build-msix": "electron-builder --win --publish never",
+    "build-msix-script": "node build-msix.js",
+    "dist": "electron-builder --publish never"
   },
   "build": {
-    "appId": "com.planner.pwa",
-    "productName": "My Planner",
-    "icon": false,
+    "appId": "com.arman7777coder.windows11planner",
+    "productName": "Windows 11 Planner",
+    "copyright": "Copyright © 2025 Arman7777-coder",
     "directories": {
       "output": "dist"
     },
+    "files": [
+      "**/*",
+      "!dist/**/*",
+      "!build/**/*",
+      "!*.md",
+      "!BUILD_README.md",
+      "!SHARE_README.md",
+      "!STORE_README.md"
+    ],
     "win": {
-      "target": "nsis"
+      "target": [
+        {
+          "target": "appx",
+          "arch": ["x64"]
+        }
+      ],
+      "publisherName": "Arman7777-coder",
+      "certificateFile": false,
+      "certificatePassword": false,
+      "verifyUpdateCodeSignature": false
+    },
+    "appx": {
+      "applicationId": "Windows11Planner",
+      "publisher": "CN=Arman7777-coder",
+      "publisherDisplayName": "Arman7777-coder",
+      "identityName": "Windows11Planner",
+      "displayName": "Windows 11 Planner",
+      "backgroundColor": "#2563EB",
+      "languages": ["en-US"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
     }
   },
   "devDependencies": {
