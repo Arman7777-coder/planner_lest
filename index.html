@@ -21,7 +21,7 @@
         <!-- Custom Title Bar -->
         
         <header class="app-header">
-        
+            <div id="premium-status" class="premium-status">Free Version</div>
         </header>
         <div class="dashboard">
             <div class="stat-card">
@@ -46,6 +46,7 @@
             <div class="tabs">
                 <button class="tab-btn active" data-view="list">Tasks List</button>
                 <button class="tab-btn" data-view="calendar">Calendar View</button>
+                <button class="tab-btn" data-view="premium">Premium</button>
             </div>
             <input type="text" id="search-input" placeholder="Search tasks...">
             <select id="category-filter">
@@ -63,6 +64,34 @@
         <div class="pending-tasks">
             <h2>Pending Tasks</h2>
             <ul id="pending-list"></ul>
+        </div>
+
+        <!-- Premium Section -->
+        <div class="premium-view" id="premium-view" style="display: none;">
+            <div class="premium-content">
+                <h2>Upgrade to Premium</h2>
+                <p>Unlock advanced features with a Microsoft Store subscription!</p>
+                <div class="premium-features">
+                    <div class="feature-item">
+                        <h3>Cloud Sync</h3>
+                        <p>Sync your tasks across all your devices</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Advanced Categories</h3>
+                        <p>Unlimited custom categories and tags</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Priority Support</h3>
+                        <p>Get help from our support team</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Export & Backup</h3>
+                        <p>Export tasks and automatic backups</p>
+                    </div>
+                </div>
+                <button class="subscribe-btn" id="subscribe-btn">Subscribe Now - $4.99/month</button>
+                <p class="subscription-note">Subscription managed through Microsoft Store</p>
+            </div>
         </div>
         <!-- Add Task Modal -->
         <div class="modal" id="task-modal" style="display: none;">

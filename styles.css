@@ -139,6 +139,12 @@ h1, h2, h3, h4, h5, h6,
     margin: 0;
 }
 
+.premium-status {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-sm);
+}
+
 /* Custom Title Bar */
 .title-bar {
     position: fixed;
@@ -901,6 +907,58 @@ h1, h2, h3, h4, h5, h6,
     .modal-content {
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     }
+}
+
+/* Premium Section */
+.premium-view {
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.premium-content h2 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.premium-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.feature-item {
+    background: var(--surface);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow);
+}
+
+.feature-item h3 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.subscribe-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-lg) var(--spacing-xxl);
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: var(--spacing-md);
+}
+
+.subscribe-btn:hover {
+    background: var(--primary-dark);
+}
+
+.subscription-note {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 /* Print Styles */

@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const pendingTasksEl = document.getElementById('pending-tasks');
     const overdueTasksEl = document.getElementById('overdue-tasks');
 
+    // Microsoft Store Subscription State
+    let digitalGoodsService = null;
+    let isPremium = false; // Track if user has active premium subscription
+
     // State
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [
         {
@@ -53,9 +57,97 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTaskId = null;
     let taskIdCounter = Math.max(...tasks.map(t => t.id), 0) + 1;
 
+    // Initialize Microsoft Store billing
+    initStore().then(service => {
+        digitalGoodsService = service;
+        if (service) {
+            // Check existing purchases
+            syncOwnedPurchases(service);
+            // Load product details
+            showProducts(service);
+        }
+    });
+
+    // Microsoft Store Digital Goods API Functions
+    async function initStore() {
+        if (!('getDigitalGoodsService' in window)) {
+            console.warn('Digital Goods API not available.');
+            return null;
+        }
+
+        try {
+            // Only available when PWA is installed from Microsoft Store on Windows
+            const service = await window.getDigitalGoodsService("https://store.microsoft.com/billing");
+            return service;
+        } catch (err) {
+            console.warn('Store billing not available in this context:', err);
+            return null;
+        }
+    }
+
+    async function showProducts(service, productIds = ['monthly_subscription']) {
+        // productIds = array of InAppOfferToken strings you created in Partner Center
+        const details = await service.getDetails(productIds);
+        // details is an array of item objects with price, title, description, itemId
+        details.forEach(item => {
+            const price = new Intl.NumberFormat(navigator.language, { style: 'currency', currency: item.price.currency }).format(item.price.value);
+            console.log('Product:', item.itemId, item.title, price, item.description);
+            // TODO: render to your UI and wire buy button to purchaseProduct(...)
+        });
+        return details;
+    }
+
+    async function purchaseProduct(service, item) {
+        // item.itemId should be the SKU (InAppOfferToken)
+        const request = new PaymentRequest(
+            [{
+                supportedMethods: 'https://store.microsoft.com/billing',
+                data: { sku: item.itemId } // the store SKU
+            }],
+            // Optionally pass details object (mostly ignored by store because store provides UI)
+            {}
+        );
+
+        try {
+            const response = await request.show(); // opens Microsoft Store purchase UI
+            // response.details will include a purchase token
+            const purchaseToken = response.details?.purchaseToken || response.details?.purchase_token || null;
+            // Acknowledge / verify server-side
+            await response.complete('success'); // tell the PaymentRequest we finished
+            return { success: true, purchaseToken };
+        } catch (err) {
+            console.error('Purchase cancelled or failed:', err);
+            return { success: false, error: err };
+        }
+    }
+
+    async function syncOwnedPurchases(service) {
+        // Get items user currently owns (excluding expired subscriptions)
+        const purchaseList = await service.listPurchases();
+        for (const p of purchaseList) {
+            // p.itemId and p.purchaseToken available
+            console.log('Owned:', p.itemId, p.purchaseToken);
+            // Call your server to validate token and grant entitlement
+            // await fetch('/verify-purchase', { method:'POST', body: JSON.stringify({ itemId: p.itemId, token: p.purchaseToken })});
+            if (p.itemId === 'monthly_subscription') {
+                isPremium = true;
+            }
+        }
+        return purchaseList;
+    }
+
     // Save to localStorage
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Update premium status in UI
+    function updatePremiumStatus() {
+        const premiumIndicator = document.getElementById('premium-status');
+        if (premiumIndicator) {
+            premiumIndicator.textContent = isPremium ? 'Premium Active' : 'Free Version';
+            premiumIndicator.style.color = isPremium ? 'var(--success)' : 'var(--text-secondary)';
+        }
     }
 
     // Update stats
@@ -213,11 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render current view
     function renderCurrentView() {
+        // Hide all views first
+        document.getElementById('task-view').style.display = 'none';
+        document.getElementById('premium-view').style.display = 'none';
+
         if (currentView === 'list') {
+            document.getElementById('task-view').style.display = 'block';
             renderTaskList(getFilteredTasks());
         } else if (currentView === 'calendar') {
+            document.getElementById('task-view').style.display = 'block';
             renderCalendarView();
+        } else if (currentView === 'premium') {
+            document.getElementById('premium-view').style.display = 'block';
         }
+
         renderPendingTasks();
         updateStats();
     }
@@ -338,6 +439,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     taskForm.addEventListener('submit', handleTaskSubmit);
 
+    // Subscribe button
+    document.getElementById('subscribe-btn').addEventListener('click', async () => {
+        if (!digitalGoodsService) {
+            alert('Microsoft Store billing is not available. Please install the app from Microsoft Store to enable subscriptions.');
+            return;
+        }
+
+        try {
+            // Get product details first
+            const products = await showProducts(digitalGoodsService, ['monthly_subscription']);
+            if (products.length === 0) {
+                alert('Subscription product not found. Please check your Partner Center configuration.');
+                return;
+            }
+
+            // Purchase the first product (monthly subscription)
+            const result = await purchaseProduct(digitalGoodsService, products[0]);
+            if (result.success) {
+                alert('Subscription purchased successfully! Premium features are now available.');
+                isPremium = true;
+                // Update UI to show premium status
+                updatePremiumStatus();
+            } else {
+                alert('Purchase was cancelled or failed.');
+            }
+        } catch (error) {
+            console.error('Subscription purchase error:', error);
+            alert('An error occurred during purchase. Please try again.');
+        }
+    });
+
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             tabBtns.forEach(b => b.classList.remove('active'));
@@ -372,4 +504,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     checkOverdueTasks();
     renderCurrentView();
+    updatePremiumStatus();
 });
