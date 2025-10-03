@@ -43,6 +43,10 @@ function deleteFolderRecursive(folderPath) {
 const distPath = path.join(__dirname, 'dist');
 deleteFolderRecursive(distPath);
 
+// Clean app-temp folder
+const tempPath = path.join(__dirname, 'app-temp');
+deleteFolderRecursive(tempPath);
+
 // Clean electron-builder cache
 console.log('\n🧽 Clearing electron-builder cache...');
 try {
