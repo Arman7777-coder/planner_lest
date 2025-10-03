@@ -54,14 +54,6 @@ function createWindow() {
   mainWindow.webContents.on('dom-ready', () => {
     mainWindow.webContents.executeJavaScript(`
       // Window controls
-      document.getElementById('minimize-btn').addEventListener('click', () => {
-        window.electronAPI.sendToMain('minimize-window');
-      });
-
-      document.getElementById('maximize-btn').addEventListener('click', () => {
-        window.electronAPI.sendToMain('maximize-window');
-      });
-
       document.getElementById('close-btn').addEventListener('click', () => {
         window.electronAPI.sendToMain('close-window');
       });

@@ -8,8 +8,8 @@
 
     /* Transparent + blurred surfaces */
     --background: transparent;
-    --surface: rgba(255, 255, 255, 0.1);
-    --surface-solid: rgba(255, 255, 255, 0.1);
+    --surface: rgba(255, 255, 255, 1);
+    --surface-solid: rgba(255, 255, 255, 1);
 
     --text-primary: #000000;        /* dark text for light/glass bg */
     --text-secondary: rgba(0,0,0,0.7);
@@ -75,8 +75,6 @@ body {
 .calendar,
 .modal-content {
     background: var(--surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border);
     border-radius: var(--border-radius-large);
     box-shadow: var(--shadow);
