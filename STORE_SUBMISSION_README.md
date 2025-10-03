@@ -31,24 +31,28 @@ You need icon files in the `icons/` directory with these sizes:
 ### 2. Build APPX Package (Windows Only)
 **Important**: APPX/MSIX packaging can only be done on Windows 10/11.
 
-If you're on Windows:
+The build process now uses `electron-windows-store` which avoids the symbolic link issues:
+
 ```bash
-# Try the automated fix first (recommended)
+# Recommended: Use the fix script (handles everything automatically)
 npm run fix-build
 
-# Or try the original method
-npm run build-msix-script
+# Alternative: Manual steps
+npm run build-win  # Build regular exe first
+npm install -g electron-windows-store  # Install converter
+electron-windows-store --input-exe "dist\win-unpacked\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder
 ```
+
 This will create a `.appx` file in the `dist/` folder.
 
 If you're on Linux/macOS, transfer your project to a Windows machine and run the build command there.
 
 ### Troubleshooting Build Issues
-If you get symbolic link errors:
+If you still get errors:
 1. **Run as Administrator**: Right-click Command Prompt → Run as Administrator
-2. **Clear cache**: `npx electron-builder cache clean`
-3. **Enable Developer Mode**: Settings → Update & Security → For developers → Developer Mode: ON
-4. **Use fix script**: `npm run fix-build` (tries alternative methods)
+2. **Enable Developer Mode**: Settings → Update & Security → For developers → Developer Mode: ON
+3. **Clear npm cache**: `npm cache clean --force`
+4. **Use fix script**: `npm run fix-build` (most reliable method)
 
 ### 3. Test the Package Locally
 Install the MSIX file on your Windows machine to ensure it works correctly.

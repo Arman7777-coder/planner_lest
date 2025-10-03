@@ -31,12 +31,7 @@
       "!STORE_README.md"
     ],
     "win": {
-      "target": [
-        {
-          "target": "appx",
-          "arch": ["x64"]
-        }
-      ],
+      "target": "nsis",
       "publisherName": "Arman7777-coder",
       "certificateFile": false,
       "certificatePassword": false,

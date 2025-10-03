@@ -28,13 +28,28 @@ if (!fs.existsSync(iconPath)) {
   console.warn('Required sizes: 16x16, 24x24, 32x32, 48x48, 64x64, 128x128, 256x256, 512x512');
 }
 
-// Build the APPX package
+// Build regular exe first
 try {
-  console.log('📦 Running electron-builder for APPX...');
-  execSync('npm run build-msix', { stdio: 'inherit' });
+  console.log('📦 Building regular executable...');
+  execSync('npm run build-win', { stdio: 'inherit' });
 
-  console.log('✅ Build completed successfully!');
-  console.log('📁 Check the dist/ folder for your APPX package');
+  console.log('✅ Regular exe built successfully!');
+  console.log('📁 Check dist/win-unpacked/ for My Planner.exe');
+  console.log('');
+
+  // Now try electron-windows-store
+  console.log('🔄 Installing electron-windows-store...');
+  try {
+    execSync('npm install -g electron-windows-store', { stdio: 'inherit' });
+  } catch (installError) {
+    console.log('⚠️  electron-windows-store already installed or install failed, continuing...');
+  }
+
+  console.log('📦 Converting to APPX with electron-windows-store...');
+  execSync('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+
+  console.log('✅ APPX conversion successful!');
+  console.log('📁 Check dist/ folder for Windows11Planner.appx');
   console.log('');
   console.log('🚀 Next steps for Microsoft Store submission:');
   console.log('1. Test the APPX package locally');
@@ -55,14 +70,15 @@ try {
   console.log('🔧 FIX 2: Run as Administrator');
   console.log('Right-click Command Prompt/PowerShell → Run as Administrator');
   console.log('');
-  console.log('🔧 FIX 3: Disable code signing temporarily');
-  console.log('Edit package.json and set: "certificateFile": false');
-  console.log('');
-  console.log('🔧 FIX 4: Alternative build method');
+  console.log('🔧 FIX 3: Manual electron-windows-store');
   console.log('npm install -g electron-windows-store');
-  console.log('electron-windows-store --input-exe dist\\win-unpacked\\My Planner.exe --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder');
+  console.log('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder');
   console.log('');
-  console.log('🔧 FIX 5: Check Windows Developer Mode');
+  console.log('🔧 FIX 4: Check Windows Developer Mode');
   console.log('Settings → Update & Security → For developers → Developer Mode: ON');
+  console.log('');
+  console.log('🔧 FIX 5: Build just the exe first');
+  console.log('npm run build-win');
+  console.log('Then manually use electron-windows-store on the exe');
   process.exit(1);
 }

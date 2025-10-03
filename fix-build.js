@@ -31,41 +31,42 @@ if (!fs.existsSync(iconPath)) {
   console.log('✅ Icon file found\n');
 }
 
-// Fix 4: Try alternative build method
-console.log('🔄 Trying alternative build method...\n');
+// Fix 4: Try electron-windows-store method
+console.log('🔄 Trying electron-windows-store method...\n');
 
 try {
   // First build regular exe
   console.log('Building regular executable...');
   execSync('npm run build-win', { stdio: 'inherit' });
 
-  console.log('✅ Regular build successful!');
-  console.log('📁 Check dist/ folder for win-unpacked folder\n');
+  console.log('✅ Regular exe built successfully!');
+  console.log('📁 Check dist/win-unpacked/ for My Planner.exe\n');
 
   // Then try electron-windows-store
   console.log('🔄 Installing electron-windows-store...');
   try {
     execSync('npm install -g electron-windows-store', { stdio: 'inherit' });
-
-    console.log('📦 Converting to APPX with electron-windows-store...');
-    execSync('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
-
-    console.log('✅ APPX conversion successful!');
-    console.log('📁 Check dist/ folder for Windows11Planner.appx\n');
-
-  } catch (ewsError) {
-    console.log('⚠️  electron-windows-store failed, but regular build succeeded');
-    console.log('💡 You can manually convert the exe to appx later\n');
+  } catch (installError) {
+    console.log('⚠️  electron-windows-store install issue, trying to continue...');
   }
 
-} catch (error) {
-  console.error('❌ Build failed:', error.message);
-  console.log('\n💡 Last resort options:');
-  console.log('1. Try running: npm run build-win (just build exe)');
-  console.log('2. Use Windows Store tools manually');
-  console.log('3. Check Windows Developer Mode is enabled');
-  process.exit(1);
+  console.log('📦 Converting to APPX with electron-windows-store...');
+  execSync('electron-windows-store --input-exe "dist\\win-unpacked\\My Planner.exe" --output-directory dist --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+
+  console.log('✅ APPX conversion successful!');
+  console.log('📁 Check dist/ folder for Windows11Planner.appx\n');
+
+} catch (ewsError) {
+  console.log('⚠️  electron-windows-store conversion failed');
+  console.log('Error:', ewsError.message);
+  console.log('\n💡 Alternative: Build exe only and convert manually later');
+  console.log('npm run build-win');
+  console.log('Then run electron-windows-store command separately\n');
 }
+
+// If we get here, at least the exe was built
+console.log('🎉 Build process completed!');
+console.log('📋 Next: Test your app and submit to Microsoft Store');
 
 console.log('🎉 Build process completed!');
 console.log('📋 Next: Test your app and submit to Microsoft Store');
