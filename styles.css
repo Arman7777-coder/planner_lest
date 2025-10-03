@@ -22,7 +22,7 @@
     --spacing-xl: 24px;
     --spacing-xxl: 32px;
     --acrylic-blur: blur(3000px);
-    --acrylic-backdrop: rgba(255, 255, 255, 0.15);
+    --acrylic-backdrop: rgba(255, 255, 255, 0.95);
 }
 
 body {
