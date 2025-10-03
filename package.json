@@ -12,6 +12,7 @@
     "build-msix": "electron-builder --win --publish never",
     "build-msix-script": "node build-msix.js",
     "fix-build": "node fix-build.js",
+    "force-clean": "node force-clean.js",
     "dist": "electron-builder --publish never"
   },
   "build": {

@@ -79,11 +79,21 @@ try {
   console.log('');
 
   if (error.message.includes('Access is denied') || error.message.includes('remove')) {
-    console.log('🔧 FILE PERMISSION ISSUE DETECTED:');
-    console.log('1. Close any running instances of the app');
-    console.log('2. Manually delete the dist/ folder');
-    console.log('3. Run: rd /s /q dist (in Command Prompt)');
-    console.log('');
+    console.log('🔧 FILE PERMISSION ISSUE DETECTED!');
+    console.log('🚀 Auto-running force cleanup...\n');
+
+    try {
+      execSync('npm run force-clean', { stdio: 'inherit' });
+      console.log('\n🔄 Retrying build after cleanup...\n');
+      execSync('npm run build-win', { stdio: 'inherit' });
+      console.log('✅ Build succeeded after cleanup!');
+      return; // Exit successfully
+    } catch (cleanupError) {
+      console.log('❌ Auto-cleanup failed, please try manually:');
+      console.log('npm run force-clean');
+      console.log('Then: npm run build-msix-script');
+      process.exit(1);
+    }
   }
 
   console.log('🔧 FIX 1: Clear electron-builder cache');
