@@ -44,10 +44,10 @@
       "sign": false
     },
     "appx": {
-      "applicationId": "Windows11Planner",
-      "publisher": "CN=Arman7777-coder",
+      "applicationId": "50688NewHope.Planner",
+      "publisher": "CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF",
       "publisherDisplayName": "NewHope",
-      "identityName": "Windows11Planner",
+      "identityName": "50688NewHope.Planner",
       "displayName": "Windows 11 Planner",
       "backgroundColor": "#2563EB",
       "languages": ["en-US"]
