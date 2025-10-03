@@ -42,26 +42,12 @@ try {
   console.log('✅ Portable exe built successfully!');
   console.log('📁 Check dist/ for My Planner 1.0.0.exe\n');
 
-  // Then try electron-windows-store
-  console.log('🔄 Installing electron-windows-store...');
-  try {
-    execSync('npm install -g electron-windows-store', { stdio: 'inherit' });
-  } catch (installError) {
-    console.log('⚠️  electron-windows-store install issue, trying to continue...');
-  }
+  // Try electron-builder with appx target
+  console.log('📦 Building APPX with electron-builder...');
+  execSync('npm run build-win', { stdio: 'inherit' });
 
-  console.log('📦 Converting to APPX with electron-windows-store...');
-  // Move exe to a separate folder for electron-windows-store
-  execSync('mkdir app-temp', { stdio: 'inherit' });
-  execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
-
-  execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist-appx" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
-
-  // Clean up temp folder
-  execSync('rmdir /s /q app-temp', { stdio: 'inherit' });
-
-  console.log('✅ APPX conversion successful!');
-  console.log('📁 Check dist-appx/ folder for Windows11Planner.appx\n');
+  console.log('✅ APPX build successful!');
+  console.log('📁 Check dist/ folder for the .appx file\n');
 
 } catch (ewsError) {
   console.log('⚠️  electron-windows-store conversion failed');
