@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window
+  // Create the browser window with Windows 11 acrylic effect
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -19,9 +19,18 @@ function createWindow() {
     },
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false, // Don't show until ready
-    titleBarStyle: 'default', // Use default title bar for Store compatibility
+    frame: false, // Remove default frame for custom title bar
+    transparent: true, // Enable transparency for acrylic effect
+    backgroundColor: '#00000000', // Fully transparent background
+    titleBarStyle: 'hidden', // Hide title bar for custom design
     autoHideMenuBar: true, // Hide menu bar by default
+    vibrancy: 'acrylic', // Windows 11 acrylic effect (if supported)
   });
+
+  // Enable blur behind window on Windows
+  if (process.platform === 'win32') {
+    mainWindow.setBackgroundMaterial('acrylic'); // Windows 11 blur effect
+  }
 
   // Load the app
   mainWindow.loadFile('index.html');
@@ -45,6 +54,47 @@ function createWindow() {
   // Emitted when the window is closed
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  // Handle window controls
+  mainWindow.webContents.on('dom-ready', () => {
+    mainWindow.webContents.executeJavaScript(`
+      // Window controls
+      document.getElementById('minimize-btn').addEventListener('click', () => {
+        window.electronAPI.sendToMain('minimize-window');
+      });
+
+      document.getElementById('maximize-btn').addEventListener('click', () => {
+        window.electronAPI.sendToMain('maximize-window');
+      });
+
+      document.getElementById('close-btn').addEventListener('click', () => {
+        window.electronAPI.sendToMain('close-window');
+      });
+
+      // Make title bar draggable
+      const titleBar = document.querySelector('.title-bar');
+      let isDragging = false;
+      let startX, startY;
+
+      titleBar.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          const deltaX = e.clientX - startX;
+          const deltaY = e.clientY - startY;
+          window.electronAPI.sendToMain('drag-window', { deltaX, deltaY });
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+    `);
   });
 
   // Create application menu
@@ -153,6 +203,34 @@ app.on('activate', () => {
   // On macOS, re-create window when dock icon is clicked
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
+  }
+});
+
+// IPC handlers for window controls
+const { ipcMain } = require('electron');
+
+ipcMain.on('minimize-window', () => {
+  if (mainWindow) mainWindow.minimize();
+});
+
+ipcMain.on('maximize-window', () => {
+  if (mainWindow) {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  }
+});
+
+ipcMain.on('close-window', () => {
+  if (mainWindow) mainWindow.close();
+});
+
+ipcMain.on('drag-window', (event, { deltaX, deltaY }) => {
+  if (mainWindow) {
+    const [x, y] = mainWindow.getPosition();
+    mainWindow.setPosition(x + deltaX, y + deltaY);
   }
 });
 
