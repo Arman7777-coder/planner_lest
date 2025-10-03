@@ -5,7 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window with Windows 11 acrylic effect
+  // Create the browser window with complete transparency
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
@@ -15,22 +15,16 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      preload: path.join(__dirname, 'preload.js'), // Optional preload script
+      preload: path.join(__dirname, 'preload.js'),
     },
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false, // Don't show until ready
     frame: false, // Remove default frame for custom title bar
-    transparent: true, // Enable transparency for acrylic effect
-    backgroundColor: '#00000000', // Fully transparent background
+    transparent: true, // Enable complete transparency
+    backgroundColor: '#00000000', // Fully transparent background (opacity 0)
     titleBarStyle: 'hidden', // Hide title bar for custom design
     autoHideMenuBar: true, // Hide menu bar by default
-    vibrancy: 'acrylic', // Windows 11 acrylic effect (if supported)
   });
-
-  // Enable blur behind window on Windows
-  if (process.platform === 'win32') {
-    mainWindow.setBackgroundMaterial('acrylic'); // Windows 11 blur effect
-  }
 
   // Load the app
   mainWindow.loadFile('index.html');

@@ -7,7 +7,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Example: Send message to main process
   sendToMain: (channel, data) => {
     // Whitelist of valid channels
-    const validChannels = ['new-task', 'save-data', 'load-data'];
+    const validChannels = ['new-task', 'save-data', 'load-data', 'minimize-window', 'maximize-window', 'close-window', 'drag-window'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
