@@ -176,7 +176,7 @@ function createMenu() {
 }
 
 // App event handlers
-app.whenReady().then(createWindow);
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
   // On macOS, keep app running even when all windows are closed

@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const pendingTasksEl = document.getElementById('pending-tasks');
     const overdueTasksEl = document.getElementById('overdue-tasks');
 
-    // Premium State
-    let isPremium = false; // Track if user has active premium subscription
 
     // State
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [
@@ -62,14 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
 
-    // Update premium status in UI
-    function updatePremiumStatus() {
-        const premiumIndicator = document.getElementById('premium-status');
-        if (premiumIndicator) {
-            premiumIndicator.textContent = isPremium ? 'Premium Active' : 'Free Version';
-            premiumIndicator.style.color = isPremium ? 'var(--success)' : 'var(--text-secondary)';
-        }
-    }
 
     // Update stats
     function updateStats() {
@@ -224,20 +214,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return filtered;
     }
 
+    // Update breadcrumb navigation
+    function updateBreadcrumb(viewName) {
+        const breadcrumbEl = document.getElementById('nav-breadcrumb');
+        if (breadcrumbEl) {
+            breadcrumbEl.innerHTML = `<span class="nav-item active">${viewName}</span>`;
+        }
+    }
+
     // Render current view
     function renderCurrentView() {
         // Hide all views first
         document.getElementById('task-view').style.display = 'none';
-        document.getElementById('premium-view').style.display = 'none';
 
         if (currentView === 'list') {
             document.getElementById('task-view').style.display = 'block';
+            updateBreadcrumb('Tasks List');
             renderTaskList(getFilteredTasks());
         } else if (currentView === 'calendar') {
             document.getElementById('task-view').style.display = 'block';
+            updateBreadcrumb('Calendar View');
             renderCalendarView();
-        } else if (currentView === 'premium') {
-            document.getElementById('premium-view').style.display = 'block';
         }
 
         renderPendingTasks();
@@ -360,10 +357,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     taskForm.addEventListener('submit', handleTaskSubmit);
 
-    // Subscribe button
-    document.getElementById('subscribe-btn').addEventListener('click', () => {
-        alert('Premium subscription feature - coming soon! This will integrate with Microsoft Store subscriptions.');
-    });
 
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -399,5 +392,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     checkOverdueTasks();
     renderCurrentView();
-    updatePremiumStatus();
 });
