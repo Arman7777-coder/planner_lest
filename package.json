@@ -1,10 +1,10 @@
 {
-  "name": "focus-planner",
+  "name": "windows-11-planner",
   "version": "1.0.1",
-  "description": "FocusPlanner — a modern Windows 11-style task management and productivity app.",
+  "description": "Windows 11 Style Task Management App",
   "author": "Arman7777-coder",
   "main": "main.js",
-  "homepage": "https://github.com/Arman7777-coder/focus-planner",
+  "homepage": "https://github.com/Arman7777-coder/windows-11-planner",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
@@ -16,8 +16,8 @@
     "dist": "electron-builder --publish never"
   },
   "build": {
-    "appId": "com.arman7777coder.focusplanner",
-    "productName": "FocusPlanner",
+    "appId": "com.arman7777coder.windows11planner",
+    "productName": "Windows 11 Planner",
     "copyright": "Copyright © 2025 Arman7777-coder",
     "directories": {
       "output": "dist"
@@ -39,21 +39,19 @@
         }
       ],
       "icon": "icons/512x512.png",
-      "certificateFile": null,
-      "certificatePassword": null,
+      "certificateFile": false,
+      "certificatePassword": false,
       "verifyUpdateCodeSignature": false,
       "sign": false
     },
     "appx": {
-      "applicationId": "FocusPlanner",
+      "applicationId": "Planner",
       "publisher": "CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF",
       "publisherDisplayName": "NewHope",
       "identityName": "50688NewHope.FocusPlanner",
-      "displayName": "FocusPlanner",
+      "displayName": "Focus Planner",
       "backgroundColor": "#2563EB",
-      "languages": ["en-US"],
-      "logo": "icons/512x512.png",
-      "assets": "icons"
+      "languages": ["en-US"]
     },
     "nsis": {
       "oneClick": false,
@@ -68,3 +66,4 @@
     "electron-packager": "^17.1.2"
   }
 }
+
