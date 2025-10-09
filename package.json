@@ -51,7 +51,8 @@
       "identityName": "50688NewHope.FocusPlanner",
       "displayName": "Focus Planner",
       "backgroundColor": "#2563EB",
-      "languages": ["en-US"]
+      "languages": ["en-US"],
+      "icon": "icons/512x512.png"
     },
     "nsis": {
       "oneClick": false,
