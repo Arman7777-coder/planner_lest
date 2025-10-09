@@ -38,7 +38,7 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "icons/512x512.png",
+      "icon": "icons/icon-512.png",
       "certificateFile": false,
       "certificatePassword": false,
       "verifyUpdateCodeSignature": false,
@@ -51,8 +51,7 @@
       "identityName": "50688NewHope.FocusPlanner",
       "displayName": "Focus Planner",
       "backgroundColor": "#2563EB",
-      "languages": ["en-US"],
-      "icon": "icons/512x512.png"
+      "languages": ["en-US"]
     },
     "nsis": {
       "oneClick": false,
