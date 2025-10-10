@@ -63,14 +63,19 @@ try {
   try {
     // Move exe to a separate folder for electron-windows-store
     execSync('mkdir app-temp', { stdio: 'inherit' });
-    // Try both possible paths (electron-builder vs electron-packager)
+    // Try electron-builder path first
     try {
-      execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
+      execSync('copy "dist\\win-unpacked\\Windows 11 Planner.exe" "app-temp\\"', { stdio: 'inherit' });
     } catch (e) {
-      execSync('copy "dist\\My Planner-win32-x64\\My Planner.exe" "app-temp\\"', { stdio: 'inherit' });
+      // Fallback to electron-packager paths
+      try {
+        execSync('copy "dist\\My Planner 1.0.0.exe" "app-temp\\"', { stdio: 'inherit' });
+      } catch (e2) {
+        execSync('copy "dist\\My Planner-win32-x64\\My Planner.exe" "app-temp\\"', { stdio: 'inherit' });
+      }
     }
 
-    execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist" --package-name Windows11Planner --package-display-name "Windows 11 Planner" --publisher CN=Arman7777-coder', { stdio: 'inherit' });
+    execSync('electron-windows-store --input-directory "app-temp" --output-directory "dist" --package-name FocusPlanner --package-display-name "Focus Planner" --publisher CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF', { stdio: 'inherit' });
 
     // Clean up temp folder
     execSync('rmdir /s /q app-temp', { stdio: 'inherit' });
