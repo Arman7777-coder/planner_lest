@@ -32,8 +32,13 @@
       "!STORE_README.md"
     ],
     "win": {
-      "target": [],
-      "icon": "icons/icon-512.png",
+      "target": [
+        {
+          "target": "appx",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icons/icon.ico",
       "certificateFile": false,
       "certificatePassword": false,
       "verifyUpdateCodeSignature": false,
