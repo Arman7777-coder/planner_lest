@@ -121,8 +121,11 @@ h1, h2, h3, h4, h5, h6,
 }
 
 .app-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: var(--spacing-xxl);
+    padding: var(--spacing-md) 0;
 }
 
 .app-header h1 {
@@ -137,6 +140,56 @@ h1, h2, h3, h4, h5, h6,
     font-weight: 700;
     color: var(--primary);
     cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.app-logo:hover {
+    color: var(--primary-dark);
+}
+
+.subscription-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.subscription-status:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.status-indicator {
+    font-size: 8px;
+    color: var(--warning);
+    transition: color 0.2s ease;
+}
+
+.status-indicator.trial {
+    color: var(--warning);
+}
+
+.status-indicator.subscribed {
+    color: var(--success);
+}
+
+.status-indicator.expired {
+    color: var(--error);
+}
+
+.status-text {
+    color: var(--text-primary);
+    font-size: 13px;
+}
     transition: opacity 0.2s ease;
     margin: 0;
 }

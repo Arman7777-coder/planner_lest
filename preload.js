@@ -15,10 +15,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Example: Receive messages from main process
   receiveFromMain: (channel, func) => {
-    const validChannels = ['task-created', 'data-saved'];
+    const validChannels = ['task-created', 'data-saved', 'subscription-status-changed'];
     if (validChannels.includes(channel)) {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
+  },
+
+  // Subscription API
+  subscription: {
+    getStatus: () => ipcRenderer.invoke('get-subscription-status'),
+    purchase: () => ipcRenderer.invoke('purchase-subscription'),
+    openStore: () => ipcRenderer.invoke('open-store-subscription'),
+    onStatusChange: (callback) => {
+      ipcRenderer.on('subscription-status-changed', (event, status) => callback(status));
+    }
+  },
+
+  // Premium helpers
+  premium: {
+    openUpgrade: () => ipcRenderer.send('subscription', 'open'),
+    exportData: (data) => ipcRenderer.invoke('export-data', data)
   },
 
   // Platform info

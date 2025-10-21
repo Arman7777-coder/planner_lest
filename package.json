@@ -1,8 +1,8 @@
 {
   "name": "windows-11-planner",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Windows 11 Style Task Management App",
-  "author": "Arman7777-coder",
+  "author": "NewHope",
   "main": "main.js",
   "homepage": "https://github.com/Arman7777-coder/windows-11-planner",
   "scripts": {
@@ -10,15 +10,13 @@
     "build": "electron-builder",
     "build-win": "electron-builder --win",
     "build-msix": "electron-builder --win --publish never",
-    "build-msix-script": "node build-msix.js",
-    "fix-build": "node fix-build.js",
-    "force-clean": "node force-clean.js",
+    "build-appx": "electron-builder --win appx --publish never",
     "dist": "electron-builder --publish never"
   },
   "build": {
-    "appId": "com.arman7777coder.windows11planner",
-    "productName": "Windows 11 Planner",
-    "copyright": "Copyright © 2025 Arman7777-coder",
+    "appId": "com.newhope.focusplanner",
+    "productName": "Focus Planner",
+    "copyright": "Copyright © 2025 NewHope",
     "directories": {
       "output": "dist"
     },
@@ -35,17 +33,17 @@
       "target": [
         {
           "target": "appx",
-          "arch": ["x64"]
+          "arch": ["x64", "arm64"]
         }
       ],
-      "icon": "icons/icon.ico",
-      "certificateFile": false,
-      "certificatePassword": false,
+      "icon": "icons/icon-512.png",
+      "sign": false,
       "verifyUpdateCodeSignature": false,
-      "sign": false
+      "cscLink": "C:/Users/Lenovo/certs/storecert.pfx",
+      "cscKeyPassword": "1011"
     },
     "appx": {
-      "applicationId": "Planner",
+      "applicationId": "NewHope.FocusPlanner",
       "publisher": "CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF",
       "publisherDisplayName": "NewHope",
       "identityName": "50688NewHope.FocusPlanner",
@@ -62,8 +60,10 @@
   },
   "devDependencies": {
     "electron": "^25.0.0",
-    "electron-builder": "^24.0.0",
+    "electron-builder": "^26.0.12",
     "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "@microsoft/store": "^1.0.0"
   }
 }
-

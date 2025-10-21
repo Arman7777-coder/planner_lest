@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Planner - Subscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .subscription-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subscription-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+
+        .status-card.trial {
+            border-left-color: #ffc107;
+        }
+
+        .status-card.expired {
+            border-left-color: #dc3545;
+        }
+
+        .status-card.subscribed {
+            border-left-color: #28a745;
+        }
+
+        .status-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .status-message {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .trial-countdown {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .countdown-text {
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .price-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .price-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            color: #666;
+            list-style: none;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #999;
+            margin-top: 30px;
+        }
+
+        .subscription-active {
+            display: none;
+        }
+
+        .subscription-active.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="subscription-container">
+        <div class="app-icon">📅</div>
+        
+        <h1>Focus Planner</h1>
+        <p class="subtitle">Premium Task Management</p>
+
+        <!-- Trial Status Card -->
+        <div class="status-card trial" id="trialStatusCard">
+            <div class="status-title">Free Trial Active</div>
+            <div class="status-message" id="trialMessage">Enjoy your free trial!</div>
+            <div class="trial-countdown">
+                <div class="countdown-text" id="trialCountdown">3 days remaining</div>
+            </div>
+            <div class="price-display">$9.00<span style="font-size: 16px;">/month</span></div>
+            <div class="price-details">After trial ends • Cancel anytime</div>
+            
+            <div class="features-list">
+                <li>Unlimited tasks and projects</li>
+                <li>Advanced scheduling and reminders</li>
+                <li>Priority customer support</li>
+                <li>Cloud sync across devices</li>
+                <li>Custom themes and layouts</li>
+            </div>
+
+            <button class="btn" id="subscribeBtn">Subscribe Now - $9/month</button>
+            <button class="btn btn-secondary" onclick="window.close()">Continue Trial</button>
+        </div>
+
+        <!-- Expired Status Card -->
+        <div class="status-card expired" id="expiredStatusCard" style="display: none;">
+            <div class="status-title">Trial Expired</div>
+            <div class="status-message">Your free trial has ended. Subscribe to continue using Focus Planner.</div>
+            <div class="price-display">$9.00<span style="font-size: 16px;">/month</span></div>
+            <div class="price-details">Cancel anytime • No commitment</div>
+            
+            <div class="features-list">
+                <li>Unlimited tasks and projects</li>
+                <li>Advanced scheduling and reminders</li>
+                <li>Priority customer support</li>
+                <li>Cloud sync across devices</li>
+                <li>Custom themes and layouts</li>
+            </div>
+
+            <button class="btn" id="expiredSubscribeBtn">Subscribe Now - $9/month</button>
+        </div>
+
+        <!-- Active Subscription Card -->
+        <div class="status-card subscribed" id="subscribedStatusCard" style="display: none;">
+            <div class="status-title">Premium Active</div>
+            <div class="status-message">You have an active premium subscription. Thank you!</div>
+            <div class="price-details">Next billing: <span id="nextBillingDate">-</span></div>
+            
+            <div class="features-list">
+                <li>✓ Unlimited tasks and projects</li>
+                <li>✓ Advanced scheduling and reminders</li>
+                <li>✓ Priority customer support</li>
+                <li>✓ Cloud sync across devices</li>
+                <li>✓ Custom themes and layouts</li>
+            </div>
+
+            <button class="btn btn-secondary" onclick="window.close()">Continue Using App</button>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="spinner"></div>
+            <p>Processing subscription...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage">
+            <strong>Error:</strong> <span id="errorText"></span>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <strong>Success!</strong> <span id="successText"></span>
+        </div>
+
+        <div class="footer-text">
+            Subscription managed through Microsoft Store<br>
+            You can cancel anytime in your Microsoft account settings
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let subscriptionManager;
+        let currentStatus;
+
+        // Initialize subscription UI
+        async function initializeSubscription() {
+            try {
+                // Get subscription status from main process
+                currentStatus = await ipcRenderer.invoke('get-subscription-status');
+                updateUI(currentStatus);
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Start countdown timer if trial is active
+                if (currentStatus.isTrialActive) {
+                    startCountdown();
+                }
+                
+            } catch (error) {
+                console.error('Error initializing subscription:', error);
+                showError('Failed to load subscription status');
+            }
+        }
+
+        // Update UI based on subscription status
+        function updateUI(status) {
+            // Hide all status cards
+            document.getElementById('trialStatusCard').style.display = 'none';
+            document.getElementById('expiredStatusCard').style.display = 'none';
+            document.getElementById('subscribedStatusCard').style.display = 'none';
+            
+            if (status.isTrialActive) {
+                document.getElementById('trialStatusCard').style.display = 'block';
+                document.getElementById('trialCountdown').textContent = 
+                    `${status.trialDaysRemaining} day${status.trialDaysRemaining !== 1 ? 's' : ''} remaining`;
+            } else if (status.isSubscribed) {
+                document.getElementById('subscribedStatusCard').style.display = 'block';
+                // Update next billing date if available
+                const nextBilling = new Date();
+                nextBilling.setDate(nextBilling.getDate() + 30);
+                document.getElementById('nextBillingDate').textContent = nextBilling.toLocaleDateString();
+            } else {
+                document.getElementById('expiredStatusCard').style.display = 'block';
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            document.getElementById('subscribeBtn').addEventListener('click', handleSubscribe);
+            document.getElementById('expiredSubscribeBtn').addEventListener('click', handleSubscribe);
+        }
+
+        // Handle subscription purchase
+        async function handleSubscribe() {
+            showLoading();
+            hideMessages();
+            
+            try {
+                const result = await ipcRenderer.invoke('purchase-subscription');
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    
+                    // Refresh subscription status
+                    setTimeout(async () => {
+                        currentStatus = await ipcRenderer.invoke('get-subscription-status');
+                        updateUI(currentStatus);
+                        hideLoading();
+                    }, 2000);
+                } else {
+                    hideLoading();
+                    showError(result.message);
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Purchase failed. Please try again.');
+                console.error('Subscription error:', error);
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'block';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+
+        // Show error message
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            document.getElementById('successText').textContent = message;
+            document.getElementById('successMessage').style.display = 'block';
+        }
+
+        // Hide all messages
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        // Start countdown timer for trial
+        function startCountdown() {
+            function updateCountdown() {
+                if (currentStatus && currentStatus.isTrialActive) {
+                    const daysRemaining = currentStatus.trialDaysRemaining;
+                    const countdownElement = document.getElementById('trialCountdown');
+                    
+                    if (countdownElement) {
+                        countdownElement.textContent = 
+                            `${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} remaining`;
+                    }
+                    
+                    if (daysRemaining <= 0) {
+                        // Trial expired, refresh status
+                        location.reload();
+                    }
+                }
+            }
+            
+            // Update countdown every minute
+            setInterval(updateCountdown, 60000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeSubscription);
+    </script>
+</body>
+</html>
+
+
+
+
