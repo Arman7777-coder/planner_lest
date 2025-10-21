@@ -2,19 +2,29 @@ const { app, BrowserWindow, Menu, shell, dialog, ipcMain } = require('electron')
 const fs = require('fs');
 const path = require('path');
 const isDev = process.env.NODE_ENV === 'development';
-const SubscriptionManager = require('./subscription-manager');
+
+// Try to load subscription manager, but don't fail if it doesn't exist
+let SubscriptionManager;
+try {
+  SubscriptionManager = require('./subscription-manager');
+} catch (error) {
+  console.warn('Subscription manager not found, running without subscription features');
+  SubscriptionManager = null;
+}
 
 let mainWindow;
 let subscriptionManager;
 
 function createWindow() {
-  // Initialize subscription manager
-  subscriptionManager = new SubscriptionManager();
-  
+  // Initialize subscription manager if available
+  if (SubscriptionManager) {
+    subscriptionManager = new SubscriptionManager();
+  }
+
   // Check subscription status before showing main window
   checkSubscriptionStatus();
 
-  // Create the browser window with complete transparency
+  // Create the browser window
   mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
@@ -29,8 +39,7 @@ function createWindow() {
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false, // Don't show until ready
     frame: false, // Remove default frame for custom title bar
-    transparent: true, // Enable complete transparency
-    backgroundColor: '#00000000', // Fully transparent background (opacity 0)
+    backgroundColor: '#ffffff', // Solid white background for MSIX compatibility
     titleBarStyle: 'hidden', // Hide title bar for custom design
     autoHideMenuBar: true, // Hide menu bar by default
   });
@@ -96,25 +105,29 @@ function createWindow() {
   createMenu();
   
   // Set up subscription status change handler
-  subscriptionManager.onStatusChange = (status) => {
-    if (mainWindow) {
-      mainWindow.webContents.send('subscription-status-changed', status);
-    }
-  };
-  
-  // Start subscription monitoring
-  subscriptionManager.startSubscriptionMonitoring();
+  if (subscriptionManager) {
+    subscriptionManager.onStatusChange = (status) => {
+      if (mainWindow) {
+        mainWindow.webContents.send('subscription-status-changed', status);
+      }
+    };
+
+    // Start subscription monitoring
+    subscriptionManager.startSubscriptionMonitoring();
+  }
 }
 
 // Check subscription status and show appropriate UI
 function checkSubscriptionStatus() {
-  const status = subscriptionManager.getSubscriptionStatus();
-  
-  // Allow app to launch for all users - show subscription UI within the app instead
-  // if (!status.canUseApp) {
-  //   // Show subscription window if user can't use the app
-  //   showSubscriptionWindow();
-  // }
+  if (subscriptionManager) {
+    const status = subscriptionManager.getSubscriptionStatus();
+
+    // Allow app to launch for all users - show subscription UI within the app instead
+    // if (!status.canUseApp) {
+    //   // Show subscription window if user can't use the app
+    //   showSubscriptionWindow();
+    // }
+  }
 }
 
 // Show subscription management window
@@ -131,8 +144,7 @@ function showSubscriptionWindow() {
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false,
     frame: false,
-    transparent: true,
-    backgroundColor: '#00000000',
+    backgroundColor: '#ffffff',
     titleBarStyle: 'hidden',
     resizable: false,
     parent: mainWindow,
@@ -158,27 +170,31 @@ function showSubscriptionWindow() {
 }
 
 // IPC: open subscription window on demand from renderer
-ipcMain.on('subscription', (_event, action) => {
-  if (action === 'open') {
-    showSubscriptionWindow();
-  }
-});
+if (ipcMain && typeof ipcMain.on === 'function') {
+  ipcMain.on('subscription', (_event, action) => {
+    if (action === 'open' && showSubscriptionWindow) {
+      showSubscriptionWindow();
+    }
+  });
+}
 
 // IPC: premium export (JSON/CSV placeholder)
-ipcMain.handle('export-data', async (_event, payload) => {
-  try {
-    const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-      title: 'Export tasks',
-      defaultPath: 'focus-planner-export.json',
-      filters: [{ name: 'JSON', extensions: ['json'] }]
-    });
-    if (canceled || !filePath) return { success: false, message: 'Export canceled' };
-    fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
-    return { success: true, path: filePath };
-  } catch (e) {
-    return { success: false, message: e.message };
-  }
-});
+if (ipcMain && typeof ipcMain.handle === 'function') {
+  ipcMain.handle('export-data', async (_event, payload) => {
+    try {
+      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+        title: 'Export tasks',
+        defaultPath: 'focus-planner-export.json',
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      });
+      if (canceled || !filePath) return { success: false, message: 'Export canceled' };
+      fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
+      return { success: true, path: filePath };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+}
 
 function createMenu() {
   const template = [
@@ -234,7 +250,7 @@ function createMenu() {
         {
           label: 'Subscription',
           click: () => {
-            if (subscriptionManager) {
+            if (subscriptionManager && showSubscriptionWindow) {
               showSubscriptionWindow();
             }
           }
@@ -295,53 +311,57 @@ app.on('activate', () => {
 });
 
 // IPC handlers for window controls
-ipcMain.on('minimize-window', () => {
-  if (mainWindow) mainWindow.minimize();
-});
+if (ipcMain && typeof ipcMain.on === 'function') {
+  ipcMain.on('minimize-window', () => {
+    if (mainWindow) mainWindow.minimize();
+  });
 
-ipcMain.on('maximize-window', () => {
-  if (mainWindow) {
-    if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow.maximize();
+  ipcMain.on('maximize-window', () => {
+    if (mainWindow) {
+      if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize();
+      } else {
+        mainWindow.maximize();
+      }
     }
-  }
-});
+  });
 
-ipcMain.on('close-window', () => {
-  if (mainWindow) mainWindow.close();
-});
+  ipcMain.on('close-window', () => {
+    if (mainWindow) mainWindow.close();
+  });
 
-ipcMain.on('drag-window', (event, { deltaX, deltaY }) => {
-  if (mainWindow) {
-    const [x, y] = mainWindow.getPosition();
-    mainWindow.setPosition(x + deltaX, y + deltaY);
-  }
-});
+  ipcMain.on('drag-window', (event, { deltaX, deltaY }) => {
+    if (mainWindow) {
+      const [x, y] = mainWindow.getPosition();
+      mainWindow.setPosition(x + deltaX, y + deltaY);
+    }
+  });
+}
 
 // IPC handlers for subscription functionality
-ipcMain.handle('get-subscription-status', async () => {
-  if (subscriptionManager) {
-    return subscriptionManager.getSubscriptionStatus();
-  }
-  return null;
-});
+if (ipcMain && typeof ipcMain.handle === 'function') {
+  ipcMain.handle('get-subscription-status', async () => {
+    if (subscriptionManager) {
+      return subscriptionManager.getSubscriptionStatus();
+    }
+    return { canUseApp: true, isTrialActive: false, isSubscribed: false, statusType: 'free', message: 'Free version' };
+  });
 
-ipcMain.handle('purchase-subscription', async () => {
-  if (subscriptionManager) {
-    return await subscriptionManager.purchaseSubscription();
-  }
-  return { success: false, message: 'Subscription manager not available' };
-});
+  ipcMain.handle('purchase-subscription', async () => {
+    if (subscriptionManager) {
+      return await subscriptionManager.purchaseSubscription();
+    }
+    return { success: false, message: 'Subscription manager not available' };
+  });
 
-ipcMain.handle('open-store-subscription', async () => {
-  if (subscriptionManager) {
-    subscriptionManager.openStoreSubscriptionPage();
-    return { success: true };
-  }
-  return { success: false };
-});
+  ipcMain.handle('open-store-subscription', async () => {
+    if (subscriptionManager) {
+      subscriptionManager.openStoreSubscriptionPage();
+      return { success: true };
+    }
+    return { success: false };
+  });
+}
 
 // Security: Prevent new window creation
 app.on('web-contents-created', (event, contents) => {
