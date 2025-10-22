@@ -38,7 +38,7 @@ Make sure your manifest includes the subscription capability:
 
 ```xml
 <Capabilities>
-  <rescap:Capability Name="allowElevation"/>
+  <Capability Name="internetClient" />
 </Capabilities>
 ```
 

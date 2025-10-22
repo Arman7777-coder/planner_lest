@@ -1,19 +1,19 @@
 // Preload script for secure communication between main and renderer processes
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Expose protected methods that allow the renderer process to use
+// Safely expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Example: Send message to main process
+  // Send message to main process
   sendToMain: (channel, data) => {
     // Whitelist of valid channels
-    const validChannels = ['new-task', 'save-data', 'load-data', 'minimize-window', 'maximize-window', 'close-window', 'drag-window'];
+    const validChannels = ['new-task', 'save-data', 'load-data', 'minimize-window', 'maximize-window', 'close-window'];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
 
-  // Example: Receive messages from main process
+  // Receive messages from main process
   receiveFromMain: (channel, func) => {
     const validChannels = ['task-created', 'data-saved', 'subscription-status-changed'];
     if (validChannels.includes(channel)) {

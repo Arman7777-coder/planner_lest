@@ -59,7 +59,7 @@ const manifestContent = `<?xml version="1.0" encoding="utf-8"?>
   <Identity Name="50688NewHope.FocusPlanner"
     ProcessorArchitecture="x64"
     Publisher='CN=BBF25640-AF6B-4DC7-9F91-5C8D3847C5CF'
-    Version="1.0.4.0" />
+    Version="1.0.5.0" />
   <Properties>
     <DisplayName>Focus Planner</DisplayName>
     <PublisherDisplayName>NewHope</PublisherDisplayName>
@@ -74,7 +74,6 @@ const manifestContent = `<?xml version="1.0" encoding="utf-8"?>
   </Dependencies>
   <Capabilities>
     <Capability Name="internetClient" />
-    <rescap:Capability Name="allowElevation"/>
   </Capabilities>
   <Applications>
     <Application Id="Planner" Executable="app\\Focus Planner.exe" EntryPoint="Windows.DesktopBridgeApplication">
@@ -109,7 +108,7 @@ try {
     }
   }
   
-  const outputMsix = path.join(distDir, 'FocusPlanner-1.0.4-fixed.msix');
+  const outputMsix = path.join(distDir, 'FocusPlanner-1.0.5-fixed.msix');
   
   if (makeappxPath) {
     console.log(`Using makeappx: ${makeappxPath}`);

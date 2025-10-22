@@ -38,9 +38,8 @@ function createWindow() {
     },
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false, // Don't show until ready
-    frame: false, // Remove default frame for custom title bar
+    frame: true, // Use default frame for MSIX compatibility
     backgroundColor: '#ffffff', // Solid white background for MSIX compatibility
-    titleBarStyle: 'hidden', // Hide title bar for custom design
     autoHideMenuBar: true, // Hide menu bar by default
   });
 
@@ -68,36 +67,19 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // Handle window controls
+  // Handle window controls (simplified for MSIX compatibility)
   mainWindow.webContents.on('dom-ready', () => {
     mainWindow.webContents.executeJavaScript(`
-      // Window controls
-      document.getElementById('close-btn').addEventListener('click', () => {
-        window.electronAPI.sendToMain('close-window');
-      });
+      // Window controls - only add if elements exist (for backward compatibility)
+      const closeBtn = document.getElementById('close-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          window.electronAPI.sendToMain('close-window');
+        });
+      }
 
-      // Make title bar draggable
-      const titleBar = document.querySelector('.title-bar');
-      let isDragging = false;
-      let startX, startY;
-
-      titleBar.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-          const deltaX = e.clientX - startX;
-          const deltaY = e.clientY - startY;
-          window.electronAPI.sendToMain('drag-window', { deltaX, deltaY });
-        }
-      });
-
-      document.addEventListener('mouseup', () => {
-        isDragging = false;
-      });
+      // Note: Custom title bar dragging removed for MSIX compatibility
+      // Windows default frame handles this automatically
     `);
   });
 
@@ -143,9 +125,8 @@ function showSubscriptionWindow() {
     },
     icon: path.join(__dirname, 'icons/icon-512.png'),
     show: false,
-    frame: false,
+    frame: true,
     backgroundColor: '#ffffff',
-    titleBarStyle: 'hidden',
     resizable: false,
     parent: mainWindow,
     modal: true
@@ -310,7 +291,7 @@ app.on('activate', () => {
   }
 });
 
-// IPC handlers for window controls
+// IPC handlers for window controls (simplified for MSIX compatibility)
 if (ipcMain && typeof ipcMain.on === 'function') {
   ipcMain.on('minimize-window', () => {
     if (mainWindow) mainWindow.minimize();
@@ -328,13 +309,6 @@ if (ipcMain && typeof ipcMain.on === 'function') {
 
   ipcMain.on('close-window', () => {
     if (mainWindow) mainWindow.close();
-  });
-
-  ipcMain.on('drag-window', (event, { deltaX, deltaY }) => {
-    if (mainWindow) {
-      const [x, y] = mainWindow.getPosition();
-      mainWindow.setPosition(x + deltaX, y + deltaY);
-    }
   });
 }
 

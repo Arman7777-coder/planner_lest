@@ -1,6 +1,6 @@
 {
   "name": "windows-11-planner",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Windows 11 Style Task Management App",
   "author": "NewHope",
   "main": "main.js",
