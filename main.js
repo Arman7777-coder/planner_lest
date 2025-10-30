@@ -3,14 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const isDev = process.env.NODE_ENV === 'development';
 
-// Try to load subscription manager, but don't fail if it doesn't exist
-let SubscriptionManager;
-try {
-  SubscriptionManager = require('./subscription-manager');
-} catch (error) {
-  console.warn('Subscription manager not found, running without subscription features');
-  SubscriptionManager = null;
-}
+// Enable subscription manager for premium version
+const SubscriptionManager = require('./subscription-manager.js');
 
 let mainWindow;
 let subscriptionManager;
@@ -67,48 +61,33 @@ function createWindow() {
     mainWindow = null;
   });
 
-  // Handle window controls (simplified for MSIX compatibility)
-  mainWindow.webContents.on('dom-ready', () => {
-    mainWindow.webContents.executeJavaScript(`
-      // Window controls - only add if elements exist (for backward compatibility)
-      const closeBtn = document.getElementById('close-btn');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          window.electronAPI.sendToMain('close-window');
-        });
-      }
-
-      // Note: Custom title bar dragging removed for MSIX compatibility
-      // Windows default frame handles this automatically
-    `);
-  });
-
-  // Create application menu
-  createMenu();
+  // Initialize subscription monitoring
+    if (subscriptionManager) {
+      subscriptionManager.startSubscriptionMonitoring();
+    }
   
-  // Set up subscription status change handler
-  if (subscriptionManager) {
-    subscriptionManager.onStatusChange = (status) => {
-      if (mainWindow) {
-        mainWindow.webContents.send('subscription-status-changed', status);
-      }
-    };
+    // Simplified initialization for MSIX compatibility
+    mainWindow.webContents.on('dom-ready', () => {
+      // Basic initialization - no complex JavaScript injection for MSIX safety
+      console.log('App loaded successfully');
+    });
 
-    // Start subscription monitoring
-    subscriptionManager.startSubscriptionMonitoring();
-  }
+  // Create application menu (simplified for MSIX)
+  createMenu();
 }
 
-// Check subscription status and show appropriate UI
-function checkSubscriptionStatus() {
-  if (subscriptionManager) {
-    const status = subscriptionManager.getSubscriptionStatus();
 
-    // Allow app to launch for all users - show subscription UI within the app instead
-    // if (!status.canUseApp) {
-    //   // Show subscription window if user can't use the app
-    //   showSubscriptionWindow();
-    // }
+
+
+// Check subscription status and show subscription window if needed
+function checkSubscriptionStatus() {
+  if (!subscriptionManager) return;
+
+  const status = subscriptionManager.getSubscriptionStatus();
+
+  // Show subscription window if trial expired and not subscribed
+  if (!status.canUseApp) {
+    showSubscriptionWindow();
   }
 }
 
@@ -147,33 +126,6 @@ function showSubscriptionWindow() {
     //     mainWindow.close();
     //   }
     // }, 1000);
-  });
-}
-
-// IPC: open subscription window on demand from renderer
-if (ipcMain && typeof ipcMain.on === 'function') {
-  ipcMain.on('subscription', (_event, action) => {
-    if (action === 'open' && showSubscriptionWindow) {
-      showSubscriptionWindow();
-    }
-  });
-}
-
-// IPC: premium export (JSON/CSV placeholder)
-if (ipcMain && typeof ipcMain.handle === 'function') {
-  ipcMain.handle('export-data', async (_event, payload) => {
-    try {
-      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
-        title: 'Export tasks',
-        defaultPath: 'focus-planner-export.json',
-        filters: [{ name: 'JSON', extensions: ['json'] }]
-      });
-      if (canceled || !filePath) return { success: false, message: 'Export canceled' };
-      fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
-      return { success: true, path: filePath };
-    } catch (e) {
-      return { success: false, message: e.message };
-    }
   });
 }
 
@@ -229,22 +181,13 @@ function createMenu() {
       label: 'Help',
       submenu: [
         {
-          label: 'Subscription',
-          click: () => {
-            if (subscriptionManager && showSubscriptionWindow) {
-              showSubscriptionWindow();
-            }
-          }
-        },
-        { type: 'separator' },
-        {
-          label: 'About Windows 11 Planner',
+          label: 'About Focus Planner',
           click: () => {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'About',
-              message: 'Windows 11 Planner',
-              detail: 'A modern task management app with Windows 11 design\nVersion 1.0.0'
+              message: 'Focus Planner',
+              detail: 'A modern task management app\nVersion 1.0.5'
             });
           }
         }
@@ -291,28 +234,14 @@ app.on('activate', () => {
   }
 });
 
-// IPC handlers for window controls (simplified for MSIX compatibility)
+// Basic window controls for MSIX compatibility
 if (ipcMain && typeof ipcMain.on === 'function') {
-  ipcMain.on('minimize-window', () => {
-    if (mainWindow) mainWindow.minimize();
-  });
-
-  ipcMain.on('maximize-window', () => {
-    if (mainWindow) {
-      if (mainWindow.isMaximized()) {
-        mainWindow.unmaximize();
-      } else {
-        mainWindow.maximize();
-      }
-    }
-  });
-
   ipcMain.on('close-window', () => {
     if (mainWindow) mainWindow.close();
   });
 }
 
-// IPC handlers for subscription functionality
+// IPC handlers for subscription and premium features
 if (ipcMain && typeof ipcMain.handle === 'function') {
   ipcMain.handle('get-subscription-status', async () => {
     if (subscriptionManager) {
@@ -331,9 +260,24 @@ if (ipcMain && typeof ipcMain.handle === 'function') {
   ipcMain.handle('open-store-subscription', async () => {
     if (subscriptionManager) {
       subscriptionManager.openStoreSubscriptionPage();
-      return { success: true };
+      return { success: true, message: 'Opening Microsoft Store...' };
     }
-    return { success: false };
+    return { success: false, message: 'Subscription manager not available' };
+  });
+
+  ipcMain.handle('export-data', async (_event, payload) => {
+    try {
+      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+        title: 'Export tasks',
+        defaultPath: 'focus-planner-export.json',
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      });
+      if (canceled || !filePath) return { success: false, message: 'Export canceled' };
+      fs.writeFileSync(filePath, JSON.stringify(payload, null, 2), 'utf8');
+      return { success: true, path: filePath };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
   });
 }
 

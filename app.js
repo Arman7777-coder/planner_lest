@@ -16,10 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const pendingTasksEl = document.getElementById('pending-tasks');
     const overdueTasksEl = document.getElementById('overdue-tasks');
 
-    // Subscription elements
-    const subscriptionStatus = document.getElementById('subscription-status');
-    const statusIndicator = document.getElementById('status-indicator');
-    const statusText = document.getElementById('status-text');
 
 
     // State
@@ -249,65 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         injectPremiumToolbar();
     }
 
-    // Premium toolbar with gated actions
-    async function injectPremiumToolbar() {
-        const container = document.querySelector('.premium-toolbar');
-        if (!container) {
-            const bar = document.createElement('div');
-            bar.className = 'premium-toolbar';
-            bar.innerHTML = `
-                <div class="premium-actions">
-                  <button class="btn" data-premium="projects">Unlimited Projects/Boards</button>
-                  <button class="btn" data-premium="reminders">Advanced Reminders</button>
-                  <button class="btn" data-premium="themes">Custom Themes</button>
-                  <button class="btn" data-premium="export">Priority Export (JSON)</button>
-                  <button class="btn btn-primary" data-upgrade>Upgrade to Premium</button>
-                </div>
-            `;
-            document.querySelector('.app')?.prepend(bar);
-            bar.addEventListener('click', onPremiumActionClick);
-        }
-    }
-
-    async function onPremiumActionClick(e) {
-        const btn = e.target.closest('button');
-        if (!btn) return;
-
-        if (btn.hasAttribute('data-upgrade')) {
-            window.electronAPI?.premium?.openUpgrade?.();
-            return;
-        }
-
-        const feature = btn.getAttribute('data-premium');
-        const status = await window.electronAPI?.subscription?.getStatus?.();
-        const isPremium = status && (status.isTrialActive || status.isSubscribed);
-
-        if (!isPremium) {
-            window.electronAPI?.premium?.openUpgrade?.();
-            return;
-        }
-
-        // Feature handlers
-        switch (feature) {
-            case 'projects':
-                alert('Premium: Unlimited projects enabled');
-                break;
-            case 'reminders':
-                alert('Premium: Advanced reminders + recurring tasks enabled');
-                break;
-            case 'themes':
-                alert('Premium: Custom themes unlocked');
-                break;
-            case 'export':
-                const result = await window.electronAPI?.premium?.exportData?.(tasks);
-                if (result?.success) {
-                    alert('Exported to: ' + result.path);
-                } else if (result) {
-                    alert('Export failed: ' + (result.message || 'Unknown'));
-                }
-                break;
-        }
-    }
 
     // Open modal for adding/editing task
     function openTaskModal(task = null) {
@@ -433,8 +370,119 @@ document.addEventListener('DOMContentLoaded', () => {
             currentView = btn.dataset.view;
             renderCurrentView();
         });
+        // Premium toolbar with gated actions
+        async function injectPremiumToolbar() {
+            const container = document.querySelector('.premium-toolbar');
+            if (!container) {
+                const bar = document.createElement('div');
+                bar.className = 'premium-toolbar';
+                bar.innerHTML = `
+                    <div class="premium-actions">
+                      <button class="btn" data-premium="projects">Unlimited Projects/Boards</button>
+                      <button class="btn" data-premium="reminders">Advanced Reminders</button>
+                      <button class="btn" data-premium="themes">Custom Themes</button>
+                      <button class="btn" data-premium="export">Priority Export (JSON)</button>
+                      <button class="btn btn-primary" data-upgrade>Upgrade to Premium</button>
+                    </div>
+                `;
+                document.querySelector('.app')?.prepend(bar);
+                bar.addEventListener('click', onPremiumActionClick);
+            }
+        }
+    
+        async function onPremiumActionClick(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+    
+            if (btn.hasAttribute('data-upgrade')) {
+                // Open subscription window
+                if (window.electronAPI && window.electronAPI.subscription) {
+                    // This would trigger opening the subscription window from main process
+                    // For now, we'll show a message
+                    alert('Opening subscription management...');
+                }
+                return;
+            }
+    
+            const feature = btn.getAttribute('data-premium');
+    
+            // Check subscription status before allowing premium features
+            try {
+                const status = await window.electronAPI?.subscription?.getStatus?.();
+                if (!status?.canUseApp || (!status?.isTrialActive && !status?.isSubscribed)) {
+                    alert('This feature requires an active subscription. Please upgrade to continue.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking subscription status:', error);
+                alert('Unable to verify subscription status. Please try again.');
+                return;
+            }
+    
+            // Feature handlers
+            switch (feature) {
+                case 'export':
+                    try {
+                        const result = await window.electronAPI?.premium?.exportData?.(tasks);
+                        if (result?.success) {
+                            alert('Exported to: ' + result.path);
+                        } else if (result) {
+                            alert('Export failed: ' + (result.message || 'Unknown'));
+                        }
+                    } catch (error) {
+                        alert('Export feature not available');
+                    }
+                    break;
+                default:
+                    alert('This premium feature is coming soon!');
+                    break;
+            }
+        }
+    
+        // Simplified subscription functions for MSIX compatibility
+        async function initializeSubscription() {
+            try {
+                if (window.electronAPI && window.electronAPI.subscription) {
+                    const status = await window.electronAPI.subscription.getStatus();
+                    updateSubscriptionUI(status);
+                }
+            } catch (error) {
+                console.error('Error initializing subscription:', error);
+                // Fallback UI for MSIX environment
+                updateSubscriptionUI({
+                    canUseApp: true,
+                    isTrialActive: false,
+                    isSubscribed: false,
+                    statusType: 'free',
+                    message: 'Free Version'
+                });
+            }
+        }
+    
+        function updateSubscriptionUI(status) {
+            if (!status) return;
+    
+            // Update status indicator color
+            statusIndicator.className = `status-indicator ${status.statusType}`;
+    
+            // Update status text
+            if (status.isTrialActive) {
+                statusText.textContent = `${status.trialDaysRemaining} days left`;
+            } else if (status.isSubscribed) {
+                statusText.textContent = 'Premium Active';
+            } else {
+                statusText.textContent = 'Trial Expired';
+            }
+    
+            // Show/hide subscription status based on access
+            if (status.canUseApp) {
+                subscriptionStatus.style.display = 'flex';
+            } else {
+                subscriptionStatus.style.display = 'none';
+            }
+        }
+    
     });
-
     searchInput.addEventListener('input', renderCurrentView);
     categoryFilter.addEventListener('change', renderCurrentView);
 
@@ -464,54 +512,4 @@ document.addEventListener('DOMContentLoaded', () => {
     checkOverdueTasks();
     renderCurrentView();
 
-    // Subscription functions
-    async function initializeSubscription() {
-        try {
-            if (window.electronAPI && window.electronAPI.subscription) {
-                const status = await window.electronAPI.subscription.getStatus();
-                updateSubscriptionUI(status);
-                
-                // Listen for subscription status changes
-                window.electronAPI.subscription.onStatusChange(updateSubscriptionUI);
-                
-                // Add click handler to open subscription window
-                subscriptionStatus.addEventListener('click', () => {
-                    window.electronAPI.sendToMain('subscription', 'open');
-                });
-            }
-        } catch (error) {
-            console.error('Error initializing subscription:', error);
-            // Fallback UI for non-electron environment
-            updateSubscriptionUI({
-                canUseApp: true,
-                isTrialActive: false,
-                isSubscribed: true,
-                statusType: 'subscribed',
-                message: 'Premium Active'
-            });
-        }
-    }
-
-    function updateSubscriptionUI(status) {
-        if (!status) return;
-
-        // Update status indicator color
-        statusIndicator.className = `status-indicator ${status.statusType}`;
-        
-        // Update status text
-        if (status.isTrialActive) {
-            statusText.textContent = `${status.trialDaysRemaining} days left`;
-        } else if (status.isSubscribed) {
-            statusText.textContent = 'Premium Active';
-        } else {
-            statusText.textContent = 'Trial Expired';
-        }
-
-        // Show/hide subscription status based on access
-        if (status.canUseApp) {
-            subscriptionStatus.style.display = 'flex';
-        } else {
-            subscriptionStatus.style.display = 'none';
-        }
-    }
 });

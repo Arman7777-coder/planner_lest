@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     }
   },
 
+
   // Subscription API
   subscription: {
     getStatus: () => ipcRenderer.invoke('get-subscription-status'),
@@ -33,7 +34,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Premium helpers
   premium: {
-    openUpgrade: () => ipcRenderer.send('subscription', 'open'),
     exportData: (data) => ipcRenderer.invoke('export-data', data)
   },
 
